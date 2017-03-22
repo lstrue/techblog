@@ -51,7 +51,7 @@ Twitter
 Twitter
 </a>
 
-<a href='https://plus.google.com/share?url={{ request.build_absolute_uri }}'>
+<a href='https://plus.google.com/share?url={{ request.build_absolute_uri }}'></a>
 
 
 <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ instance.title }}&summary={{ share_string }}&source={{ request.build_absolute_uri }}">
@@ -62,6 +62,12 @@ Linkedin
 
 
 {{ obj.content | linebreaks}}<br/>
+
+<br><br>
+
+<!-- <div class="content-markdown">{{ obj.content }}</div> -->
+<div class="content-markdown">{{ obj.get_markdown }}</div>
+
 </div>
 
 {% endblock content %}

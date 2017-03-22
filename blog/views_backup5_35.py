@@ -11,10 +11,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from urllib import quote_plus
 
-from django.utils import timezone
-
-from django.db.models import Q
-
 def post_home(request):    
     return HttpResponse("<h1>Hello</h1>")
 
@@ -45,10 +41,6 @@ def post_create(request):
 #def post_detail(request, id=None):
 def post_detail(request, slug=None):
     instance = get_object_or_404(Post, slug=slug)
-    if instance.draft:#or instance.publish > timezone.now().date(): 
-        if not request.user.is_staff or not request.user.is_superuser:
-            raise Http404
-        
 #     share_string = quote_plus(instance.content)
     share_string = quote_plus(str(instance.content.encode("utf-8"))) #http://outofmemory.cn/code-snippet/835/python-urllib-quote-huozhe-quote-plus-paochu-keyError-jiejuefangan
     context = {
@@ -77,27 +69,7 @@ def post_list(request):
     
     #return render(request, "index.html")
     
-#     queryset_list = Post.objects.all().order_by("-timestamp")
-#     queryset_list = Post.objects.filter(draft=False).filter(publish_lte=timezone.now())
-#     queryset_list = Post.objects.filter(draft=False)
-    
-#     queryset_list = Post.objects.all()
-    queryset_list = Post.objects.active().order_by("-timestamp")
-
-    if request.user.is_staff or request.user.is_superuser:
-        queryset_list = Post.objects.all().order_by("-timestamp")
-    
-    query = request.GET.get("q")
-    if query:
-#         queryset_list = queryset_list.filter(title__icontains=query)
-        
-        queryset_list = queryset_list.filter(
-        Q(title__icontains=query) |
-        Q(content__icontains=query) |
-        Q(user__first_name__icontains=query) |
-        Q(user__last_name__icontains=query)
-        ).distinct().order_by("-timestamp")
-    
+    queryset_list = Post.objects.all().order_by("-timestamp")
     paginator = Paginator(queryset_list, 5)
     page_request_var = "page"
     page = request.GET.get(page_request_var)

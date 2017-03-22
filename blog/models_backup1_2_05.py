@@ -12,9 +12,6 @@ from django.conf import settings
 
 from django.utils import timezone
 
-from markdown_deux import markdown
-from django.utils.safestring import mark_safe
-
 class PostManager(models.Manager):
 #     def all(self, *args, **kwargs):
     def active(self, *args, **kwargs):
@@ -66,10 +63,6 @@ class Post(models.Model):
     
     #class Meta:
     #    ordering = ["-timestamp", "-updated"]
-
-    def get_markdown(self):
-        content = self.content
-        return mark_safe(markdown(content))
 
 #This function basically recursively combine the title string replacing space with -
 def create_slug(instance, new_slug=None):
