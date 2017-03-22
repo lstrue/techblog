@@ -18,8 +18,6 @@ from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
 from comments.models import Comment
 
-from comments.commentforms import CommentForm
-
 def post_home(request):    
     return HttpResponse("<h1>Hello</h1>")
 
@@ -65,44 +63,12 @@ def post_detail(request, slug=None):
     #after using model manager and put logic to model, the view is very clean
     comments = instance.comments()
     
-    initial_data = {
-        "content_type": instance.get_content_type(),
-        "object_id": instance.id
-    }
-    #user comment form
-    form = CommentForm(request.POST or None, initial = initial_data)
-    if form.is_valid():
-        c_type = form.cleaned_data.get("content_type")
-        content_type = ContentType.objects.get(model=c_type) #content type
-        obj_id = form.cleaned_data.get("object_id") #obj id
-        content_data = form.cleaned_data.get("content") #content
-        
-        
-        parent_obj = None
-        try:
-            parent_id = int(request.POST.get("parent_id"))#key worrd for search "parent_id"
-        except:
-            parent_id = None
-        
-        if parent_id:
-            parent_qs = Comment.objects.filter(id=parent_id) # based on comment id get comment reply children
-            if parent_qs.exists() and parent_qs.count() == 1:
-                parent_obj = parent_qs.first()
-        
-        #create comment and comment reply
-        new_comment, created = Comment.objects.get_or_create(
-            user = request.user, content_type=content_type,
-            object_id = obj_id, content = content_data,
-            parent_for_reply = parent_obj
-        )
-    
     
     context = {
         "name": "List",
         "obj": instance,
         "share_string": share_string,
         "comments": comments,
-        "comment_form": form,
     }
     print "======" + share_string
     return render(request, "post_detail.html", context)    

@@ -13,18 +13,11 @@ from Carbon.Aliases import false
 
 #get comments based on instance and id
 class CommentManager(models.Manager): 
-    def get_all(self):
-        qs = super(CommentManager, self).filter(parent_for_reply=None)
-        return qs
-    
     def filter_by_instance(self, instance):
         content_type = ContentType.objects.get_for_model(instance.__class__)
         obj_id = instance.id
         #comments = Comment.objects.filter(content_type=content_type, object_id=obj_id)
-        
-        #qs = super(CommentManager, self).filter(content_type=content_type, object_id=obj_id)
-        qs = super(CommentManager, self).filter(content_type=content_type, object_id=obj_id).filter(parent_for_reply=None)
-        
+        qs = super(CommentManager, self).filter(content_type=content_type, object_id=obj_id)
         return qs
 
 
@@ -40,11 +33,7 @@ class Comment(models.Model):
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     
-    parent_for_reply = models.ForeignKey("self", null=True, blank=True)
-    
-    
     objects = CommentManager()
-    
     
     def __unicode__(self):
         return str(self.user.username)
@@ -53,13 +42,3 @@ class Comment(models.Model):
         return str(self.user.username)
     
     
-    #reply
-    def get_comment_children(self):
-        return Comment.objects.filter(parent_for_reply=self)
-    
-    """
-    def is_parent(self):
-        if self.parent_for_reply is not None:
-            return False
-        return True
-    """
