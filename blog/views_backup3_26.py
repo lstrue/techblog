@@ -7,13 +7,12 @@ from django.contrib import messages
 
 from .models import Post
 from .blogforms import PostForm
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def post_home(request):    
     return HttpResponse("<h1>Hello</h1>")
 
 def post_create(request):
-    form = PostForm(request.POST or None, request.FILES or None)
+    form = PostForm(request.POST or None)
     if form.is_valid():
         instance = form.save(commit = False)
         instance.save()
@@ -56,33 +55,26 @@ def post_list(request):
     
     #return render(request, "index.html")
     
-    queryset_list = Post.objects.all().order_by("-timestamp")
-    paginator = Paginator(queryset_list, 5)
-    page_request_var = "page"
-    page = request.GET.get(page_request_var)
-    try:
-        queryset = paginator.page(page)
-    except PageNotAnInteger:
-        queryset = paginator.page(1)
-    except EmptyPage:
-        queryset = paginator.page(paginator.num_pages)
-    
+    queryset = Post.objects.all()
     context = {
         "object_list": queryset,
         "name": "List",
-        "page_request_var": page_request_var
     }    
     return render(request, "post_list.html", context)
 
 def post_update(request, id=None):
+    print "id: " + id
+    
     instance = get_object_or_404(Post, id=id)
-    form = PostForm(request.POST or None, request.FILES or None, instance=instance)
+    
+    print instance.title
+        
+    form = PostForm(request.POST or None, instance=instance)
     if form.is_valid():
         instance = form.save(commit=False)
         instance.save()
         #message success
         messages.success(request, "successfully saved")
-#         messages.success(request, "<a href='#'>Item</a> Saved", extra_tags="html_safe")
         return HttpResponseRedirect(instance.get_absolute_url())
     context = {
         "name": instance.title,
