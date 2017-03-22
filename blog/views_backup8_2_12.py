@@ -15,9 +15,6 @@ from django.utils import timezone
 
 from django.db.models import Q
 
-from django.contrib.contenttypes.models import ContentType
-from comments.models import Comment
-
 def post_home(request):    
     return HttpResponse("<h1>Hello</h1>")
 
@@ -54,21 +51,10 @@ def post_detail(request, slug=None):
         
 #     share_string = quote_plus(instance.content)
     share_string = quote_plus(str(instance.content.encode("utf-8"))) #http://outofmemory.cn/code-snippet/835/python-urllib-quote-huozhe-quote-plus-paochu-keyError-jiejuefangan
-    
-    #the meaning of the bellow: Post.objects.get(id=instance.id)
-    #content_type = ContentType.objects.get_for_model(Post)
-    #obj_id = instance.id
-    #comments = Comment.objects.filter(content_type=content_type, object_id=obj_id)
-    
-    #after using model manager and put logic to model, the view is very clean
-    comments = instance.comments()
-    
-    
     context = {
         "name": "List",
         "obj": instance,
         "share_string": share_string,
-        "comments": comments,
     }
     print "======" + share_string
     return render(request, "post_detail.html", context)    

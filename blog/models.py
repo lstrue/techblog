@@ -15,6 +15,8 @@ from django.utils import timezone
 from markdown_deux import markdown
 from django.utils.safestring import mark_safe
 
+from comments.models import Comment
+
 class PostManager(models.Manager):
 #     def all(self, *args, **kwargs):
     def active(self, *args, **kwargs):
@@ -70,6 +72,14 @@ class Post(models.Model):
     def get_markdown(self):
         content = self.content
         return mark_safe(markdown(content))
+
+    #this method gets all comments based on the post instance
+    #you can also use property tag and treat it as a property
+    def comments(self):
+        instance = self
+        qs = Comment.objects.filter_by_instance(instance)
+        return qs
+    
 
 #This function basically recursively combine the title string replacing space with -
 def create_slug(instance, new_slug=None):
