@@ -5,14 +5,20 @@ from __future__ import unicode_literals
 from django.db import models
 from django.core.urlresolvers import reverse
 
+from django.db.models.signals import pre_save
+from django.utils.text import slugify
+
+from django.conf import settings
+
 def upload_location(obj, filename):
 #     filebase, extension = filename.split(".")
 #     return "%s/%s.%s" %(instance.id, instance.id, extension)
     return "%s/%s" %(obj.id, filename) # later on you can upload images based on user id
 
 class Post(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, default = 1)
     title = models.CharField(max_length = 140)
-    
+    slug = models.SlugField(unique=True)
     image = models.ImageField(
             upload_to=upload_location,
             null = True, #db
@@ -36,7 +42,27 @@ class Post(models.Model):
     def get_absolute_url(self):
 #         return "/blog/%s/" %(self.id)
 #        return reverse("detail", kwargs={"id": self.id})
-        return reverse("blog:detail", kwargs={"id": self.id})
+
+        #return reverse("blog:detail", kwargs={"id": self.id})
+        return reverse("blog:detail", kwargs={"slug": self.slug})
     
     #class Meta:
     #    ordering = ["-timestamp", "-updated"]
+
+#This function basically recursively combine the title string replacing space with -
+def create_slug(instance, new_slug=None):
+    slug = slugify(instance.title)
+    if new_slug is not None:
+        slug = new_slug
+    qs = Post.objects.filter(slug=slug).order_by("-id")
+    exists = qs.exists()
+    if exists:
+        new_slug = "%s-%s" %(slug, qs.first().id)
+        return create_slug(instance, new_slug=new_slug)
+    return slug
+    
+def pre_save_post_receiver(sender, instance, *args, **kwargs): # here the second argument has to be named instance 
+    if not instance.slug:
+        instance.slug = create_slug(instance)
+        
+pre_save.connect(pre_save_post_receiver, sender=Post)
