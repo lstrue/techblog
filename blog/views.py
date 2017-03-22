@@ -20,6 +20,8 @@ from comments.models import Comment
 
 from comments.commentforms import CommentForm
 
+from .utils import get_read_time
+
 def post_home(request):    
     return HttpResponse("<h1>Hello</h1>")
 
@@ -64,6 +66,10 @@ def post_detail(request, slug=None):
     
     #after using model manager and put logic to model, the view is very clean
     comments = instance.comments()
+    
+    print(get_read_time(instance.content))
+    print(get_read_time(instance.get_markdown()))
+    
     
     initial_data = {
         "content_type": instance.get_content_type(),

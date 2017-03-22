@@ -10,6 +10,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from Carbon.Aliases import false
 
+from django.core.urlresolvers import reverse
 
 #get comments based on instance and id
 class CommentManager(models.Manager): 
@@ -63,3 +64,9 @@ class Comment(models.Model):
             return False
         return True
     """
+    
+    def get_absolute_url(self):
+        return reverse("comments:thread", kwargs={"id": self.id})
+    
+    def get_delete_url(self):
+        return reverse("comments:delete", kwargs={"id": self.id})

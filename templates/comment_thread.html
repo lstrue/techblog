@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% load urlify %}
+
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+{{ instance.title }} | {{ block.super }}
+{% endblock head_title %}
+
+
+
+{% block content %}
+
+<div class="col-sm-6 col-sm-offset-3">
+
+	<!-- obj.comment_set.all // this is to test admin-->
+	<div>
+		
+		<p>{{ comment.content }}</p>
+		<footer>User: {{ comment.user }} | Time: {{ comment.timestamp|timesince }} ago | 
+		{% if comment.chidren.count > 0 %}{{ comment.children.count}} Comment
+			{% if comment.children.count > 1 %}s{% endif %} |
+		{% endif %}
+		
+		{% if request.user == comment.user %}
+			<a href="{{ comment.get_delete_url }}">Delete</a>
+		{% endif %}
+		<a class="comment-reply-btn" href="#">Reply</a>
+		</footer>
+		
+		<div class="comment-reply"><!--  style="display: none;" -->
+		
+			{% for child_comment in comment.get_comment_children %}
+				<blockquote>
+					<p>{{ child_comment.content }}</p>
+					<footer>via {{ child_comment.user }} | {{child_comment.timestamp|timesince}} ago</footer>
+				</blockquote>
+			{% endfor %}
+			
+			<form method="POST" action="."> {% csrf_token %}
+				{{ comment_form|crispy }}
+				<input type="hidden" name="parent_id" value="{{ comment.id }}">
+				<input type="submit" value="Reply" class="btn-default">
+			</form>
+			
+		</div>
+				
+		
+	</div>
+
+</div>
+
+{% endblock content %}
