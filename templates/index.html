@@ -1,0 +1,23 @@
+<html>
+<title></title>
+
+<body>
+
+<h1>body</h1>
+{{ name }}
+
+{% for obj in object_list %}
+	<!-- <a href="/blog/{{obj.id}}/">{{ obj.title }}</a><br> -->
+	<a href='{{obj.get_absolute_url}}'>{{ obj.title }}</a><br>
+	<!-- <a href="{% url "blog:detail" id=obj.id %}">{{ obj.title }}</a><br> --> 
+	
+	<h4>content</h4>{{ obj.content }}<br>
+	<h4>timestamp</h4>{{ obj.timestamp }}<br>
+	<h4>updated</h4>{{ obj.updated }}<br>
+	<h4>id</h4>{{ obj.id }}<br>
+	<br>------------------------<br>
+{% endfor %}
+
+</body>
+
+</html>

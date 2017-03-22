@@ -1,7 +1,7 @@
 {% extends "ecom/header.html"%}
 {% block content %}
 	{% for post in object_list %}
-		<h5>{{ post.date | date:"Y-m-d" }}<a href="/blog/{{post.id}}">{{post.title}}</a></h5>
+		<h5>{{ post.timestamp | date:"Y-m-d" }}<a href="/blog/{{post.id}}">{{post.title}}</a></h5>
 		<br>
 		{{post.body}}
 	{% endfor %}
