@@ -1,11 +1,15 @@
 
 
-From Advancing the blog. lecture 18 - 
+From Advancing the blog. lecture 23 - 
 
-18 - comment thread for delete and permission later
-19 - word count
-20 - read time skipped
-21 - delete view
-http://localhost:8000/comments/3/
-http://localhost:8000/comments/3/delete
-22 - delete permission
+Login, logout, register
+
+23, 24 - user login 
+25 - register
+26 - login required
+27 - navigation
+
+In all it's about Try django 19 and Advancing the blog
+https://github.com/codingforentrepreneurs/try-django-19
+https://github.com/codingforentrepreneurs/Advancing-the-Blog
+

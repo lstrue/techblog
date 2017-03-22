@@ -5,6 +5,7 @@ from django.contrib import messages
 
 from .commentforms import CommentForm
 from .models import Comment
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -58,6 +59,7 @@ def comment_thread(request, id):
     }
     return render(request, "comment_thread.html", context)    
 
+@login_required #need to have LOGIN_URL
 def comment_delete(request, id):
     #instance = get_object_or_404(Comment, id=id)
     #instance = Comment.objects.get(id=id)

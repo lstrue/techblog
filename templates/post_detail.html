@@ -9,9 +9,12 @@
 {% endblock head_title %}
 
 
+{% block post_detail_link %}
+	<li><a href='{{ obj.get_absolute_url }}'>{{ obj.title }}</a></li>
+{% endblock %}
+
 
 {% block content %}
-
 <div class="col-sm-6 col-sm-offset-3">
 
 	{% if obj.image %}
@@ -77,13 +80,15 @@
 	<div>
 		<p class="lead">Comments</p>
 		
-		
-		<form method="POST" action=".">
-			{% csrf_token %}
-			{{ comment_form | crispy }}
-			<input type="submit" value="Post Commit" class="btn btn-default">
-		</form>
-		
+		{% if request.user.is_authenticated %}
+			<form method="POST" action=".">
+				{% csrf_token %}
+				{{ comment_form | crispy }}
+				<input type="submit" value="Post Commit" class="btn btn-default">
+			</form>
+		{% else %}
+			<p>You need to login to comment</p>
+		{% endif %}
 		
 		{% for comment in comments %}
 			<blockquote>
@@ -104,11 +109,15 @@
 						</blockquote>
 					{% endfor %}
 					
-					<form method="POST" action="."> {% csrf_token %}
-						{{ comment_form|crispy }}
-						<input type="hidden" name="parent_id" value="{{ comment.id }}">
-						<input type="submit" value="Reply" class="btn-default">
-					</form>
+					{% if request.user.is_authenticated %}
+						<form method="POST" action="."> {% csrf_token %}
+							{{ comment_form|crispy }}
+							<input type="hidden" name="parent_id" value="{{ comment.id }}">
+							<input type="submit" value="Reply" class="btn-default">
+						</form>
+					{% else %}
+						<p>You need to login to comment</p>
+					{% endif %}
 					
 				</div>
 				

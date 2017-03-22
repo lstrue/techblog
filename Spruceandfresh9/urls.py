@@ -1,4 +1,4 @@
-"""Spruceandfresh8 URL Configuration
+"""Spruceandfresh9 URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.8/topics/http/urls/
@@ -23,6 +23,8 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
+from accounts.views import login_view, logout_view, register_view
+
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 #     url(r'^blog/$', post_home),
@@ -30,11 +32,14 @@ urlpatterns = [
     url(r'^blog/', include('blog.urls', namespace="blog")),
     url(r'^ecom/', include('ecom.urls')),
     url(r'^comments/', include('comments.urls', namespace="comments")),
+    url(r'^login/', login_view, name='login'),
+    url(r'^logout/', logout_view, name='logout'),
+    url(r'^register/', register_view, name='register'),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) 
-    #static(/static/, document_root=Spruceandfresh8/static_cdn)
+    #static(/static/, document_root=Spruceandfresh9/static_cdn)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    #static(/media/, document_root=Spruceandfresh8/media_cdn)
+    #static(/media/, document_root=Spruceandfresh9/media_cdn)
     
