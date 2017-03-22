@@ -28,19 +28,26 @@ class UserRegisterForm(forms.ModelForm):
         fields = [
             'username',
             'password',
-            'email',
-            'email2'
+            'password2',
+            'email'
         ]
         
-    email = forms.EmailField(label="Email address")
-    email2 = forms.EmailField(label="Confirm Email")
     password = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(widget=forms.PasswordInput)
+    email = forms.EmailField(label="Email address")
     
     def clean(self, *args, **kwargs):
+        password = self.cleaned_data.get("password")
+        password2 = self.cleaned_data.get("password2")
+        if password != password2:
+            raise forms.ValidationError("Password must match")
+        
+        username = self.cleaned_data.get("username")
+        username_qs = get_user_model().objects.filter(username=username)
+        if username_qs.exists():
+            raise forms.ValidationError("This username has already been registered")
+        
         email = self.cleaned_data.get("email")
-        email2 = self.cleaned_data.get("email2")
-        if email != email2:
-            raise forms.ValidationError("Emails must match")
         email_qs = get_user_model().objects.filter(email=email)
         if email_qs.exists():
             raise forms.ValidationError("This email has already been registered")

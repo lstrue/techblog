@@ -1,4 +1,4 @@
-"""Spruceandfresh9 URL Configuration
+"""SpruceandfreshM1 URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.8/topics/http/urls/
@@ -39,7 +39,7 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) 
-    #static(/static/, document_root=Spruceandfresh9/static_cdn)
+    #static(/static/, document_root=SpruceandfreshM1/static_cdn)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    #static(/media/, document_root=Spruceandfresh9/media_cdn)
+    #static(/media/, document_root=SpruceandfreshM1/media_cdn)
     
